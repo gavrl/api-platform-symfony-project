@@ -40,7 +40,9 @@ class BlogController extends AbstractController
         return $this->json(
             [
                 'page' => $page,
-                'data' => self::POSTS
+                'data' => array_map(function ($item) {
+                    return $this->generateUrl('blog_by_id', ['id' => $item['id']]);
+                },self::POSTS)
             ]
         );
     }
