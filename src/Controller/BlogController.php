@@ -41,6 +41,11 @@ class BlogController extends AbstractController
      */
     public function list(Request $request, $page = 1): Response
     {
+        $em = $this->getDoctrine()->getManager();
+        $em->getConnection()->connect();
+        $connected = $em->getConnection()->isConnected();
+
+        dump($connected);
         $limit = $request->get('limit', 10);
 
         return $this->json(
