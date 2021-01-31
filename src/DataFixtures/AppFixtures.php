@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\BlogPost;
+use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -11,10 +12,19 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
+        $this->loadUsers($manager);
+        $this->loadBlogPosts($manager);
+
+    }
+
+    private function loadBlogPosts(ObjectManager $manager)
+    {
+        /** @var User $user */
+        $user = $this->getReference('user_admin');
         $blogPost = (new BlogPost)
             ->setTitle('A first post')
             ->setPublished(new DateTime())
-            ->setAuthor('Sergey Gavr')
+            ->setAuthor($user)
             ->setContent('Post text')
             ->setSlug('a-first-post');
 
@@ -23,12 +33,34 @@ class AppFixtures extends Fixture
         $blogPost = (new BlogPost)
             ->setTitle('A second post')
             ->setPublished(new DateTime())
-            ->setAuthor('Sergey Gavr')
+            ->setAuthor($user)
             ->setContent('Another post text')
             ->setSlug('a-second-post');
 
         $manager->persist($blogPost);
 
+        $manager->flush();
+    }
+
+    private function loadComments()
+    {
+
+    }
+
+    /**
+     * @param ObjectManager $manager
+     */
+    private function loadUsers(ObjectManager $manager)
+    {
+        $user = (new User)
+            ->setUsername('Gavrl')
+            ->setEmail('sergeygavr.94@yandex.com')
+            ->setName('Sergey')
+            ->setPassword('12345');
+
+        $this->addReference('user_admin', $user);
+
+        $manager->persist($user);
         $manager->flush();
     }
 }

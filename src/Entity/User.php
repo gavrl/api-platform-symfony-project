@@ -23,6 +23,16 @@ class User implements UserInterface
     private ?int $id;
 
     /**
+     * @var string
+     */
+    private string $username;
+
+    /**
+     * @var string
+     */
+    private string $name;
+
+    /**
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private ?string $email;
@@ -41,12 +51,12 @@ class User implements UserInterface
     /**
      * @ORM\OneToMany(targetEntity="BlogPost", mappedBy="author")
      */
-    private ArrayCollection $posts;
+    private $posts;
 
     /**
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="author")
      */
-    private ArrayCollection $comments;
+    private $comments;
 
     public function __construct()
     {
@@ -78,7 +88,18 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return $this->username;
+    }
+
+    /**
+     * @param string $username
+     * @return $this
+     */
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
     }
 
     /**
@@ -105,7 +126,7 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self
@@ -146,5 +167,24 @@ class User implements UserInterface
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }
