@@ -14,6 +14,22 @@
             "./src/DataFixtures/AppFixtures.php"
         ]
     },
+    "easycorp/easyadmin-bundle": {
+        "version": "2.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.0",
+            "ref": "0a51040a43c6f2172a3a0135cd15daf2043905d7"
+        },
+        "files": [
+            "./config/packages/easy_admin.yaml",
+            "./config/routes/easy_admin.yaml"
+        ]
+    },
+    "pagerfanta/pagerfanta": {
+        "version": "v2.5.1"
+    },
     "phpdocumentor/reflection-common": {
         "version": "2.2.0"
     },
@@ -35,6 +51,9 @@
             "./config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "symfony/expression-language": {
+        "version": "v5.2.2"
+    },
     "symfony/orm-pack": {
         "version": "v2.1.0"
     },
@@ -49,6 +68,19 @@
     },
     "symfony/serializer-pack": {
         "version": "v1.0.4"
+    },
+    "symfony/validator": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "d902da3e4952f18d3bf05aab29512eb61cabd869"
+        },
+        "files": [
+            "./config/packages/test/validator.yaml",
+            "./config/packages/validator.yaml"
+        ]
     },
     "webmozart/assert": {
         "version": "1.9.1"
