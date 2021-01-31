@@ -7,9 +7,20 @@ use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
 {
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private UserPasswordEncoderInterface $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+        $this->passwordEncoder = $passwordEncoder;
+    }
+
     public function load(ObjectManager $manager)
     {
         $this->loadUsers($manager);
@@ -55,8 +66,9 @@ class AppFixtures extends Fixture
         $user = (new User)
             ->setUsername('Gavrl')
             ->setEmail('sergeygavr.94@yandex.com')
-            ->setName('Sergey')
-            ->setPassword('12345');
+            ->setName('Sergey');
+
+        $user->setPassword($this->passwordEncoder->encodePassword($user,'12345'));
 
         $this->addReference('user_admin', $user);
 

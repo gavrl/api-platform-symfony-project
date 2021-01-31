@@ -14,4 +14,4 @@ migrate:
 	symfony console d:m:m
 
 fixtures:
-	symfony console doctrine:fixtures:load
+	symfony console doctrine:fixtures:load -q
