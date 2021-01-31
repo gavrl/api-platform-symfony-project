@@ -2,10 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\BlogPost;
-use App\Entity\Comment;
-use App\Entity\User;
-use DateTime;
+use App\Entity\{BlogPost, Comment, User};
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
@@ -68,11 +65,15 @@ class AppFixtures extends Fixture
         $user = $this->getReference('user_admin');
 
         for ($i = 0; $i < 100; $i++) {
+            /** @var BlogPost $post */
+            $post = $this->getReference("blog_post_$i");
+
             for ($j = 0; $j < rand(1, 10); $j++) {
                 $comment = (new Comment)
                     ->setAuthor($user)
                     ->setPublished($this->faker->dateTimeThisYear)
-                    ->setContent($this->faker->realText());
+                    ->setContent($this->faker->realText())
+                    ->setPost($post);
 
                 $manager->persist($comment);
             }
