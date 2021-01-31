@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -35,6 +37,22 @@ class User implements UserInterface
      * @ORM\Column(type="string")
      */
     private string $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity="BlogPost", mappedBy="author")
+     */
+    private ArrayCollection $posts;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="author")
+     */
+    private ArrayCollection $comments;
+
+    public function __construct()
+    {
+        $this->posts = new ArrayCollection();
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -112,5 +130,21 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
     }
 }
