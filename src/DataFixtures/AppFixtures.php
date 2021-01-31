@@ -3,10 +3,13 @@
 namespace App\DataFixtures;
 
 use App\Entity\BlogPost;
+use App\Entity\Comment;
 use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Exception;
+use Faker\{Factory, Generator};
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AppFixtures extends Fixture
@@ -15,47 +18,67 @@ class AppFixtures extends Fixture
      * @var UserPasswordEncoderInterface
      */
     private UserPasswordEncoderInterface $passwordEncoder;
+    private Generator $faker;
 
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->passwordEncoder = $passwordEncoder;
+        $this->faker = Factory::create();
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @throws Exception
+     */
     public function load(ObjectManager $manager)
     {
         $this->loadUsers($manager);
         $this->loadBlogPosts($manager);
-
+        $this->loadComments($manager);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @throws Exception
+     */
     private function loadBlogPosts(ObjectManager $manager)
     {
         /** @var User $user */
         $user = $this->getReference('user_admin');
-        $blogPost = (new BlogPost)
-            ->setTitle('A first post')
-            ->setPublished(new DateTime())
-            ->setAuthor($user)
-            ->setContent('Post text')
-            ->setSlug('a-first-post');
 
-        $manager->persist($blogPost);
+        for ($i = 0; $i < 100; $i++) {
+            $blogPost = (new BlogPost)
+                ->setTitle($this->faker->realText(30))
+                ->setPublished($this->faker->dateTimeThisYear)
+                ->setAuthor($user)
+                ->setContent($this->faker->realText())
+                ->setSlug($this->faker->slug);
 
-        $blogPost = (new BlogPost)
-            ->setTitle('A second post')
-            ->setPublished(new DateTime())
-            ->setAuthor($user)
-            ->setContent('Another post text')
-            ->setSlug('a-second-post');
+            $this->setReference("blog_post_$i", $blogPost);
 
-        $manager->persist($blogPost);
+            $manager->persist($blogPost);
+        }
 
         $manager->flush();
     }
 
-    private function loadComments()
+    private function loadComments(ObjectManager $manager)
     {
+        /** @var User $user */
+        $user = $this->getReference('user_admin');
 
+        for ($i = 0; $i < 100; $i++) {
+            for ($j = 0; $j < rand(1, 10); $j++) {
+                $comment = (new Comment)
+                    ->setAuthor($user)
+                    ->setPublished($this->faker->dateTimeThisYear)
+                    ->setContent($this->faker->realText());
+
+                $manager->persist($comment);
+            }
+        }
+
+        $manager->flush();
     }
 
     /**
