@@ -33,7 +33,7 @@ class BlogController extends AbstractController
                 'limit' => $limit,
                 'data' => array_map(
                     function (BlogPost $item) {
-                        return $this->generateUrl('blog_by_id', ['id' => $item->getSlug()]);
+                        return $this->generateUrl('blog_by_id', ['id' => $item->getId()]);
                     },
                     $items
                 )
@@ -42,7 +42,7 @@ class BlogController extends AbstractController
     }
 
     /**
-     * @Route("/post/{id}", name="blog_by_id", requirements={"id"="\d+"})
+     * @Route("/post/{id}", name="blog_by_id", requirements={"id"="\d+"}, methods={"GET"})
      *
      * @param BlogPost $post
      * @return Response
@@ -53,7 +53,7 @@ class BlogController extends AbstractController
     }
 
     /**
-     * @Route("/post/{slug}", name="blog_by_slug")
+     * @Route("/post/{slug}", name="blog_by_slug", methods={"GET"})
      *
      * @param BlogPost $post
      * @return Response
@@ -79,5 +79,21 @@ class BlogController extends AbstractController
         $em->flush();
 
         return $this->json($blogPost);
+    }
+
+    /**
+     * @Route("/post/{id}", name="blog_delete", requirements={"id"="\d+"}, methods={"DELETE"})
+     *
+     * @param BlogPost $post
+     * @return Response
+     */
+    public function deletePost(BlogPost $post): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $em->remove($post);
+        $em->flush();
+
+        return $this->json(null,Response::HTTP_NO_CONTENT);
     }
 }
