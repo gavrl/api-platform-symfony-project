@@ -12,3 +12,6 @@ migration:
 
 migrate:
 	symfony console d:m:m
+
+fixtures:
+	symfony console doctrine:fixtures:load
