@@ -11,7 +11,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *     itemOperations={"get"},
+ *     collectionOperations={}
+ * )
  */
 class User implements UserInterface
 {
@@ -23,14 +26,14 @@ class User implements UserInterface
     private ?int $id;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private string $username;
+    private $username;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private string $name;
+    private $name;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -86,16 +89,16 @@ class User implements UserInterface
      *
      * @see UserInterface
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
     /**
-     * @param string $username
+     * @param string|null $username
      * @return $this
      */
-    public function setUsername(string $username): self
+    public function setUsername(?string $username): self
     {
         $this->username = $username;
 
@@ -172,16 +175,16 @@ class User implements UserInterface
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return $this
      */
-    public function setName(string $name): self
+    public function setName(?string $name): User
     {
         $this->name = $name;
 
