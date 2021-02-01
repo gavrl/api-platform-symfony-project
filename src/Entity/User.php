@@ -8,12 +8,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ApiResource(
  *     itemOperations={"get"},
- *     collectionOperations={}
+ *     collectionOperations={},
+ *     normalizationContext={
+            "groups"={"read"}
+ *     }
  * )
  */
 class User implements UserInterface
@@ -22,16 +26,22 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read"})
      */
     private ?int $id;
 
     /**
      * @var string|null
+     *
+     * @ORM\Column(type="string", length=30, unique=true)
+     * @Groups({"read"})
      */
     private $username;
 
     /**
      * @var string|null
+     * @ORM\Column(type="string", length=50)
+     * @Groups({"read"})
      */
     private $name;
 
@@ -53,11 +63,13 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="BlogPost", mappedBy="author")
+     * @Groups({"read"})
      */
     private $posts;
 
     /**
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="author")
+     * @Groups({"read"})
      */
     private $comments;
 
@@ -144,7 +156,7 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        // not needed when using the "bcrypt" algorithm in security.yaml
+        return null;
     }
 
     /**
