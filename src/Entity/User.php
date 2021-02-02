@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -34,19 +35,31 @@ class User implements UserInterface
      * @var string|null
      *
      * @ORM\Column(type="string", length=30, unique=true)
+     *
      * @Groups({"read"})
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5, max=30)
      */
     private $username;
 
     /**
      * @var string|null
      * @ORM\Column(type="string", length=50)
+     *
      * @Groups({"read"})
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(min=5, max=50)
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     *
+     * @Assert\NotBlank()
+     * @Assert\Email()
+     * @Assert\Length(min=6, max=180)
      */
     private ?string $email;
 
@@ -58,6 +71,7 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
      */
     private string $password;
 
