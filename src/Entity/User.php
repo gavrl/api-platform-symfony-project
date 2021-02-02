@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,9 +18,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     itemOperations={"get"},
  *     collectionOperations={"post"},
  *     normalizationContext={
-            "groups"={"read"}
+ *          "groups"={"read"}
  *     }
  * )
+ * @UniqueEntity("username")
+ * @UniqueEntity("email")
  */
 class User implements UserInterface
 {
@@ -78,6 +81,15 @@ class User implements UserInterface
      * )
      */
     private string $password;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Expression(
+     *     "this.getPassword() === this.getRetypedPassword()",
+     *     message="Password does not match"
+     * )
+     */
+    private $retypedPassword;
 
     /**
      * @ORM\OneToMany(targetEntity="BlogPost", mappedBy="author")
@@ -218,6 +230,24 @@ class User implements UserInterface
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRetypedPassword(): ?string
+    {
+        return $this->retypedPassword;
+    }
+
+    /**
+     * @param string|null $retypedPassword
+     * @return User
+     */
+    public function setRetypedPassword(?string $retypedPassword): User
+    {
+        $this->retypedPassword = $retypedPassword;
         return $this;
     }
 }
