@@ -69,9 +69,13 @@ class User implements UserInterface
     private array $roles = [];
 
     /**
-     * @var string The hashed password
      * @ORM\Column(type="string")
+     *
      * @Assert\NotBlank()
+     * @Assert\Regex(
+     *     pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
+     *     message="Password should be 7 characters logn and contain at least one digit, one upper case letter and one lower case letter"
+     * )
      */
     private string $password;
 
