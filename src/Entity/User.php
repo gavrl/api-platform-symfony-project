@@ -17,13 +17,25 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *     itemOperations={
  *         "get"={
- *             "accessControl"="is_granted('IS_AUTHENTICATED_FULLY')"
+ *             "access_control"="is_granted('IS_AUTHENTICATED_FULLY')",
+ *             "normalization_context"={
+ *                 "groups"={"get"}
+ *             }
+ *         },
+ *         "put"={
+ *             "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object == user",
+ *             "denormalization_context"={
+ *                 "groups"={"put"}
+ *             }
  *         }
  *     },
- *     collectionOperations={"post"},
- *     normalizationContext={
- *          "groups"={"read"}
- *     }
+ *     collectionOperations={
+ *         "post"={
+ *             "denormalization_context"={
+ *                 "groups"={"post"}
+ *             }
+ *         }
+ *     },
  * )
  * @UniqueEntity("username")
  * @UniqueEntity("email")
@@ -34,7 +46,7 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private ?int $id;
 
@@ -43,7 +55,7 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", length=30, unique=true)
      *
-     * @Groups({"read"})
+     * @Groups({"get", "post"})
      *
      * @Assert\NotBlank()
      * @Assert\Length(min=5, max=30)
@@ -54,7 +66,7 @@ class User implements UserInterface
      * @var string|null
      * @ORM\Column(type="string", length=50)
      *
-     * @Groups({"read"})
+     * @Groups({"get", "post", "put"})
      *
      * @Assert\NotBlank()
      * @Assert\Length(min=5, max=50)
@@ -63,6 +75,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     *
+     * @Groups({"post", "put"})
      *
      * @Assert\NotBlank()
      * @Assert\Email()
@@ -78,6 +92,8 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string")
      *
+     * @Groups({"put", "post"})
+     *
      * @Assert\NotBlank()
      * @Assert\Regex(
      *     pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
@@ -87,6 +103,8 @@ class User implements UserInterface
     private string $password;
 
     /**
+     * @Groups({"put", "post"})
+     *
      * @Assert\NotBlank()
      * @Assert\Expression(
      *     "this.getPassword() === this.getRetypedPassword()",
@@ -97,13 +115,13 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToMany(targetEntity="BlogPost", mappedBy="author")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $posts;
 
     /**
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="author")
-     * @Groups({"read"})
+     * @Groups({"get"})
      */
     private $comments;
 
