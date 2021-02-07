@@ -8,6 +8,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -27,7 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     }
  * )
  */
-class BlogPost
+class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
 {
     /**
      * @ORM\Id
@@ -67,7 +68,7 @@ class BlogPost
      * @ORM\ManyToOne(targetEntity="User", inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
      */
-    private User $author;
+    private UserInterface $author;
 
     /**
      * @var ArrayCollection
@@ -150,10 +151,10 @@ class BlogPost
     }
 
     /**
-     * @param User $author
+     * @param UserInterface $author
      * @return $this
      */
-    public function setAuthor(User $author): self
+    public function setAuthor(UserInterface $author): self
     {
         $this->author = $author;
 

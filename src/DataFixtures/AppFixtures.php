@@ -26,7 +26,7 @@ class AppFixtures extends Fixture
             'username' => 'admin',
             'email' => 'admin@blog.com',
             'name' => 'Admin',
-            'password' => 'secret123#'
+            'password' => 'admin'
         ],
         [
             'username' => 'gavrl',
@@ -137,9 +137,6 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
 
-        $this->addReference('user_admin', $user);
-
-        $manager->persist($user);
         $manager->flush();
     }
 
