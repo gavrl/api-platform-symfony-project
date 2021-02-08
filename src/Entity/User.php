@@ -64,7 +64,7 @@ class User implements UserInterface
      * @Assert\NotBlank()
      * @Assert\Length(min=5, max=30)
      *
-     * @Groups({"get", "post", "get-comment-with-author"})
+     * @Groups({"get", "post", "get-comment-with-author", "get-blog-post-with-author"})
      */
     private $username;
 
@@ -76,7 +76,7 @@ class User implements UserInterface
      * @Assert\NotBlank()
      * @Assert\Length(min=5, max=50)
      *
-     * @Groups({"get", "post", "put", "get-comment-with-author"})
+     * @Groups({"get", "post", "put", "get-comment-with-author", "get-blog-post-with-author"})
      */
     private $name;
 

@@ -23,13 +23,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         "get",
  *         "post"={
  *             "accessControl"="is_granted('IS_AUTHENTICATED_FULLY')"
- *         },
+ *         }
+ *     },
+ *     subresourceOperations={
  *         "api_blog_posts_comments_get_subresource"={
- *             "route_name"="api_blog_posts_comments_get_subresource",
  *             "method"="GET",
  *             "normalization_context"={
  *                 "groups"={"get-comment-with-author"}
- *             }
+ *             },
  *         }
  *     },
  *     denormalizationContext={
