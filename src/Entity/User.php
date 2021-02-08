@@ -61,21 +61,22 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", length=30, unique=true)
      *
-     * @Groups({"get", "post"})
-     *
      * @Assert\NotBlank()
      * @Assert\Length(min=5, max=30)
+     *
+     * @Groups({"get", "post", "get-comment-with-author"})
      */
     private $username;
 
     /**
      * @var string|null
-     * @ORM\Column(type="string", length=50)
      *
-     * @Groups({"get", "post", "put"})
+     * @ORM\Column(type="string", length=50)
      *
      * @Assert\NotBlank()
      * @Assert\Length(min=5, max=50)
+     *
+     * @Groups({"get", "post", "put", "get-comment-with-author"})
      */
     private $name;
 
