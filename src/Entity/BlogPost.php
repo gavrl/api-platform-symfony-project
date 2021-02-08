@@ -9,10 +9,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=BlogPostRepository::class)
+ *
  * @ApiResource(
  *     itemOperations={
  *         "get",
@@ -25,6 +27,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         "post"={
  *             "accessControl"="is_granted('IS_AUTHENTICATED_FULLY')"
  *         }
+ *     },
+ *     denormalizationContext={
+ *         "groups"={"post"}
  *     }
  * )
  */
@@ -39,28 +44,35 @@ class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
      * @Assert\NotBlank()
      * @Assert\Length(min=10)
+     *
+     * @Groups({"post"})
      */
     private ?string $title;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\NotBlank()
-     * @Assert\Type("DateTimeInterface")
      */
     private ?DateTimeInterface $published;
 
     /**
      * @ORM\Column(type="text")
+     *
      * @Assert\NotBlank()
      * @Assert\Length(min=20)
+     *
+     * @Groups({"post"})
      */
     private ?string $content;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     *
      * @Assert\NotBlank()
+     *
+     * @Groups({"post"})
      */
     private $slug;
 
