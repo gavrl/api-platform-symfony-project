@@ -14,6 +14,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ *
+ * @UniqueEntity("username")
+ * @UniqueEntity("email")
+ *
  * @ApiResource(
  *     itemOperations={
  *         "get"={
@@ -43,11 +47,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  *         }
  *     },
  * )
- * @UniqueEntity("username")
- * @UniqueEntity("email")
  */
 class User implements UserInterface
 {
+    const ROLE_COMMENTATOR = 'ROLE_COMMENTATOR';
+    const ROLE_WRITER      = 'ROLE_WRITER';
+    const ROLE_EDITOR      = 'ROLE_EDITOR';
+    const ROLE_ADMIN       = 'ROLE_ADMIN';
+    const ROLE_SUPERADMIN  = 'ROLE_SUPERADMIN';
+
+    const DEFAULT_ROLES = [self::ROLE_COMMENTATOR];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -66,7 +76,7 @@ class User implements UserInterface
      *
      * @Groups({"get", "post", "get-comment-with-author", "get-blog-post-with-author"})
      */
-    private $username;
+    private ?string $username;
 
     /**
      * @var string|null
@@ -78,7 +88,7 @@ class User implements UserInterface
      *
      * @Groups({"get", "post", "put", "get-comment-with-author", "get-blog-post-with-author"})
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -92,7 +102,7 @@ class User implements UserInterface
     private ?string $email;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="simple_array", length=200)
      */
     private array $roles = [];
 
@@ -118,7 +128,7 @@ class User implements UserInterface
      *     message="Password does not match"
      * )
      */
-    private $retypedPassword;
+    private ?string $retypedPassword;
 
     /**
      * @ORM\OneToMany(targetEntity="BlogPost", mappedBy="author")
@@ -136,6 +146,7 @@ class User implements UserInterface
     {
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->roles = self::DEFAULT_ROLES;
     }
 
     public function getId(): ?int
@@ -181,11 +192,11 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return $this->roles;
+//         guarantee every user at least has ROLE_USER
+//        $roles[] = 'ROLE_USER';
+//
+//        return array_unique($roles);
     }
 
     public function setRoles(array $roles): self
