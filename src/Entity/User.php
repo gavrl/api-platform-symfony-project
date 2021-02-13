@@ -93,11 +93,11 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      *
-     * @Groups({"post", "put"})
-     *
      * @Assert\NotBlank()
      * @Assert\Email()
      * @Assert\Length(min=6, max=180)
+     *
+     * @Groups({"post", "put", "get-admin"})
      */
     private ?string $email;
 
