@@ -97,12 +97,14 @@ class User implements UserInterface
      * @Assert\Email()
      * @Assert\Length(min=6, max=180)
      *
-     * @Groups({"post", "put", "get-admin"})
+     * @Groups({"post", "put", "get-admin", "get-owner"})
      */
     private ?string $email;
 
     /**
      * @ORM\Column(type="simple_array", length=200)
+     *
+     * @Groups({"get-admin", "get-owner"})
      */
     private array $roles = [];
 
