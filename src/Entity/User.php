@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -111,7 +112,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string")
      *
-     * @Groups({"put", "post"})
+     * @Groups({"post"})
      *
      * @Assert\NotBlank()
      * @Assert\Regex(
@@ -122,7 +123,7 @@ class User implements UserInterface
     private string $password;
 
     /**
-     * @Groups({"put", "post"})
+     * @Groups({"post"})
      *
      * @Assert\NotBlank()
      * @Assert\Expression(
@@ -131,6 +132,33 @@ class User implements UserInterface
      * )
      */
     private ?string $retypedPassword;
+
+    /**
+     * @Groups({"put-reset-password"})
+     * @Assert\NotBlank()
+     * @Assert\Regex(
+     *     pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
+     *     message="Password must be seven characters long and contain at least one digit, one upper case letter and one lower case letter"
+     * )
+     */
+    private ?string $newPassword;
+
+    /**
+     * @Groups({"put-reset-password"})
+     * @Assert\NotBlank()
+     * @Assert\Expression(
+     *     "this.getNewPassword() === this.getNewRetypedPassword()",
+     *     message="Passwords does not match"
+     * )
+     */
+    private ?string $newRetypedPassword;
+
+    /**
+     * @Groups({"put-reset-password"})
+     * @Assert\NotBlank()
+     * @UserPassword()
+     */
+    private ?string $oldPassword;
 
     /**
      * @ORM\OneToMany(targetEntity="BlogPost", mappedBy="author")
@@ -296,5 +324,59 @@ class User implements UserInterface
     public function __toString(): string
     {
         return $this->getUsername();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNewPassword(): ?string
+    {
+        return $this->newPassword;
+    }
+
+    /**
+     * @param string|null $newPassword
+     * @return User
+     */
+    public function setNewPassword(?string $newPassword): User
+    {
+        $this->newPassword = $newPassword;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNewRetypedPassword(): ?string
+    {
+        return $this->newRetypedPassword;
+    }
+
+    /**
+     * @param string|null $newRetypedPassword
+     * @return User
+     */
+    public function setNewRetypedPassword(?string $newRetypedPassword): User
+    {
+        $this->newRetypedPassword = $newRetypedPassword;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOldPassword(): ?string
+    {
+        return $this->oldPassword;
+    }
+
+    /**
+     * @param string|null $oldPassword
+     * @return User
+     */
+    public function setOldPassword(?string $oldPassword): User
+    {
+        $this->oldPassword = $oldPassword;
+        return $this;
     }
 }
