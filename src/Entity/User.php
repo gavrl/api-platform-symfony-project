@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\ResetPasswordAction;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -34,6 +35,15 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
  *             },
  *             "normalization_context"={
  *                 "groups"={"get"}
+ *             }
+ *         },
+ *         "put-reset-password"={
+ *             "access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object == user",
+ *             "method"="PUT",
+ *             "path"="/users/{id}/reset-password",
+ *             "controller"=ResetPasswordAction::class,
+ *             "denormalization_context"={
+ *                 "groups"={"put-reset-password"}
  *             }
  *         }
  *     },
@@ -72,8 +82,8 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", length=30, unique=true)
      *
-     * @Assert\NotBlank()
-     * @Assert\Length(min=5, max=30)
+     * @Assert\NotBlank(groups={"post"})
+     * @Assert\Length(min=5, max=30, groups={"post"})
      *
      * @Groups({"get", "post", "get-comment-with-author", "get-blog-post-with-author"})
      */
@@ -84,8 +94,8 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", length=50)
      *
-     * @Assert\NotBlank()
-     * @Assert\Length(min=5, max=50)
+     * @Assert\NotBlank(groups={"post"})
+     * @Assert\Length(min=5, max=50, groups={"post", "put"})
      *
      * @Groups({"get", "post", "put", "get-comment-with-author", "get-blog-post-with-author"})
      */
@@ -94,9 +104,9 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      *
-     * @Assert\NotBlank()
-     * @Assert\Email()
-     * @Assert\Length(min=6, max=180)
+     * @Assert\NotBlank(groups={"post"})
+     * @Assert\Email(groups={"post", "put"})
+     * @Assert\Length(min=6, max=180, groups={"post", "put"})
      *
      * @Groups({"post", "put", "get-admin", "get-owner"})
      */
@@ -114,10 +124,11 @@ class User implements UserInterface
      *
      * @Groups({"post"})
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"post"})
      * @Assert\Regex(
      *     pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
-     *     message="Password should be 7 characters logn and contain at least one digit, one upper case letter and one lower case letter"
+     *     message="Password should be 7 characters logn and contain at least one digit, one upper case letter and one lower case letter",
+     *     groups={"post"}
      * )
      */
     private string $password;
@@ -125,10 +136,11 @@ class User implements UserInterface
     /**
      * @Groups({"post"})
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"post"})
      * @Assert\Expression(
      *     "this.getPassword() === this.getRetypedPassword()",
-     *     message="Password does not match"
+     *     message="Password does not match",
+     *     groups={"post"}
      * )
      */
     private ?string $retypedPassword;
@@ -151,7 +163,7 @@ class User implements UserInterface
      *     message="Passwords does not match"
      * )
      */
-    private ?string $newRetypedPassword;
+    private $newRetypedPassword;
 
     /**
      * @Groups({"put-reset-password"})
