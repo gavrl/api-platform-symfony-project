@@ -184,6 +184,11 @@ class User implements UserInterface
      */
     private $comments;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $passwordChangeDate;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
@@ -389,6 +394,25 @@ class User implements UserInterface
     public function setOldPassword(?string $oldPassword): User
     {
         $this->oldPassword = $oldPassword;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPasswordChangeDate()
+    {
+        return $this->passwordChangeDate;
+    }
+
+    /**
+     * @param $passwordChangeDate
+     * @return $this
+     */
+    public function setPasswordChangeDate($passwordChangeDate): self
+    {
+        $this->passwordChangeDate = $passwordChangeDate;
+
         return $this;
     }
 }

@@ -60,6 +60,8 @@ class ResetPasswordAction
             )
         );
 
+        $data->setPasswordChangeDate(time());
+
         $this->entityManager->flush();
 
         $token = $this->tokenManager->create($data);
