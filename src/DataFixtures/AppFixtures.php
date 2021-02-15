@@ -141,7 +141,8 @@ class AppFixtures extends Fixture
                 ->setUsername($userFixture['username'])
                 ->setEmail($userFixture['email'])
                 ->setName($userFixture['name'])
-                ->setRoles($userFixture['roles']);
+                ->setRoles($userFixture['roles'])
+                ->setEnabled(true);
 
             $user->setPassword(
                 $this->passwordEncoder->encodePassword(
