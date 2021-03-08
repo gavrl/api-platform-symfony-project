@@ -36,7 +36,7 @@ final class Version20210215210223 extends AbstractMigration
         $this->addSql('DROP TABLE __temp__comment');
         $this->addSql('CREATE INDEX IDX_9474526CF675F31B ON comment (author_id)');
         $this->addSql('CREATE INDEX IDX_9474526C4B89032C ON comment (post_id)');
-        $this->addSql('ALTER TABLE user ADD COLUMN enabled BOOLEAN NOT NULL');
+        $this->addSql('ALTER TABLE user ADD COLUMN enabled BOOLEAN NOT NULL DEFAULT FALSE');
         $this->addSql('ALTER TABLE user ADD COLUMN confirmation_token VARCHAR(40) DEFAULT NULL');
     }
 
