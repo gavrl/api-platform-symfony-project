@@ -2,6 +2,8 @@
 
 namespace App\EventSubscriber;
 
+use Exception;
+use App\Security\TokenGenerator;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -10,16 +12,23 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class PasswordHashSubscriber implements EventSubscriberInterface
+class UserRegisterSubscriber implements EventSubscriberInterface
 {
     /**
      * @var UserPasswordEncoderInterface
      */
     private UserPasswordEncoderInterface $passwordEncoder;
+    /**
+     * @var TokenGenerator
+     */
+    private TokenGenerator $tokenGenerator;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
-    {
+    public function __construct(
+        UserPasswordEncoderInterface $passwordEncoder,
+        TokenGenerator $tokenGenerator
+    ) {
         $this->passwordEncoder = $passwordEncoder;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     /**
@@ -28,11 +37,15 @@ class PasswordHashSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::VIEW => ['hashPassword', EventPriorities::PRE_WRITE]
+            KernelEvents::VIEW => ['userRegistered', EventPriorities::PRE_WRITE],
         ];
     }
 
-    public function hashPassword(ViewEvent $event)
+    /**
+     * @param ViewEvent $event
+     * @throws Exception
+     */
+    public function userRegistered(ViewEvent $event)
     {
         $user = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
@@ -44,5 +57,7 @@ class PasswordHashSubscriber implements EventSubscriberInterface
         $user->setPassword(
             $this->passwordEncoder->encodePassword($user, $user->getPassword())
         );
+
+        $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
     }
 }
