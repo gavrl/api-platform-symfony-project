@@ -3,7 +3,10 @@
 namespace App\EventSubscriber;
 
 use Exception;
+use Swift_Mailer;
+use Swift_Message;
 use App\Security\TokenGenerator;
+use JetBrains\PhpStorm\ArrayShape;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -22,18 +25,22 @@ class UserRegisterSubscriber implements EventSubscriberInterface
      * @var TokenGenerator
      */
     private TokenGenerator $tokenGenerator;
+    private Swift_Mailer   $mailer;
 
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
-        TokenGenerator $tokenGenerator
+        TokenGenerator $tokenGenerator,
+        Swift_Mailer $mailer
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->tokenGenerator = $tokenGenerator;
+        $this->mailer = $mailer;
     }
 
     /**
-     * @return array[]|string[]
+     * @return array
      */
+    #[ArrayShape([KernelEvents::VIEW => "array"])]
     public static function getSubscribedEvents(): array
     {
         return [
@@ -59,5 +66,13 @@ class UserRegisterSubscriber implements EventSubscriberInterface
         );
 
         $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
+
+        // Send e-mail here...
+        $message = (new Swift_Message('Hello From API PLATFORM!'))
+            ->setFrom('cepera94@gmail.com')
+            ->setTo('cepera94@gmail.com')
+            ->setBody('Hello, how are you?');
+
+        $this->mailer->send($message);
     }
 }
