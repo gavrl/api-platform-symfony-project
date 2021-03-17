@@ -2,6 +2,8 @@
 
 namespace App\EventSubscriber;
 
+use JetBrains\PhpStorm\ArrayShape;
+use App\Security\UserConfirmationService;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\UserConfirmation;
@@ -16,22 +18,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class UserConfirmationSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var UserRepository
+     * @var UserConfirmationService
      */
-    private UserRepository $userRepository;
-    /**
-     * @var EntityManagerInterface
-     */
-    private EntityManagerInterface $entityManager;
+    private UserConfirmationService $userConfirmationService;
 
+    /**
+     * UserConfirmationSubscriber constructor.
+     * @param UserConfirmationService $userConfirmationService
+     */
     public function __construct(
-        UserRepository $userRepository,
-        EntityManagerInterface $entityManager
+        UserConfirmationService $userConfirmationService
     ) {
-        $this->userRepository = $userRepository;
-        $this->entityManager = $entityManager;
+        $this->userConfirmationService = $userConfirmationService;
     }
 
+    #[ArrayShape([KernelEvents::VIEW => "array"])]
     public static function getSubscribedEvents(): array
     {
         return [
@@ -54,18 +55,7 @@ class UserConfirmationSubscriber implements EventSubscriberInterface
         /** @var UserConfirmation $confirmationToken */
         $confirmationToken = $event->getControllerResult();
 
-        $user = $this->userRepository->findOneBy(
-            ['confirmationToken' => $confirmationToken->confirmationToken]
-        );
-
-        // User was found by confirmation token
-        if (!$user) {
-            throw new NotFoundHttpException();
-        }
-
-        $user->setEnabled(true);
-        $user->setConfirmationToken(null);
-        $this->entityManager->flush();
+        $this->userConfirmationService->confirmUser($confirmationToken->confirmationToken);
 
         $event->setResponse(new JsonResponse(null, Response::HTTP_OK));
     }

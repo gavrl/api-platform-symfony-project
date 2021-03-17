@@ -3,8 +3,7 @@
 namespace App\EventSubscriber;
 
 use Exception;
-use Swift_Mailer;
-use Swift_Message;
+use App\Email\Mailer;
 use App\Security\TokenGenerator;
 use JetBrains\PhpStorm\ArrayShape;
 use ApiPlatform\Core\EventListener\EventPriorities;
@@ -25,12 +24,12 @@ class UserRegisterSubscriber implements EventSubscriberInterface
      * @var TokenGenerator
      */
     private TokenGenerator $tokenGenerator;
-    private Swift_Mailer   $mailer;
+    private Mailer   $mailer;
 
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
         TokenGenerator $tokenGenerator,
-        Swift_Mailer $mailer
+        Mailer $mailer
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->tokenGenerator = $tokenGenerator;
@@ -68,11 +67,6 @@ class UserRegisterSubscriber implements EventSubscriberInterface
         $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
 
         // Send e-mail here...
-        $message = (new Swift_Message('Hello From API PLATFORM!'))
-            ->setFrom('cepera94@gmail.com')
-            ->setTo('cepera94@gmail.com')
-            ->setBody('Hello, how are you?');
-
-        $this->mailer->send($message);
+        $this->mailer->sendConfirmationEmail($user);
     }
 }
