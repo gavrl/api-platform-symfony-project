@@ -42,15 +42,6 @@ class ResetPasswordAction
 
     public function __invoke(User $data): JsonResponse
     {
-        // $reset = new ResetPasswordAction();
-        // $reset();
-//        var_dump(
-//            $data->getNewPassword(),
-//            $data->getNewRetypedPassword(),
-//            $data->getOldPassword(),
-//            $data->getRetypedPassword()
-//        );
-//        die;
         $this->validator->validate($data);
 
         $data->setPassword(
