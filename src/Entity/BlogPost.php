@@ -11,6 +11,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -75,6 +76,16 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
             'title'
         ],
         arguments: ['orderParameterName' => '_order']
+    ),
+    ApiFilter(
+        PropertyFilter::class,
+        arguments: [
+            'parameterName' => 'properties',
+            'overrideDefaultProperties' => false,
+            'whitelist' => [
+                'id', 'author', 'slug', 'title', 'content'
+            ]
+        ]
     )
 ]
 class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
