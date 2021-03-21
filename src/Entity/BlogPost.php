@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
@@ -64,6 +65,15 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
     ApiFilter(
         RangeFilter::class,
         properties: ['id']
+    ),
+    ApiFilter(
+        OrderFilter::class,
+        properties: [
+            'id',
+            'published',
+            'title'
+        ],
+        arguments: ['orderParameterName' => '_order']
     )
 ]
 class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
