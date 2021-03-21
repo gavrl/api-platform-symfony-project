@@ -35,6 +35,9 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'access_control' => "is_granted('ROLE_EDITOR') or (is_granted('ROLE_WRITER') and object.getAuthor() == user)"
             ]
         ],
+        attributes: [
+            'order' => ['published' => 'DESC']
+        ],
         denormalizationContext: [
             'groups' => ['post']
         ]

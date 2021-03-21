@@ -27,7 +27,10 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                 '_api_receive' => false
             ]
         ]
-    ]
+    ],
+    attributes: [
+        'order' => ['published' => 'DESC']
+    ],
 )]
 class Image
 {
