@@ -42,7 +42,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
             ]
         ],
         attributes: [
-            'order' => ['published' => 'DESC']
+            'order' => ['published' => 'DESC'],
+            'maximum_items_per_page' => 30
         ],
         denormalizationContext: [
             'groups' => ['post']
