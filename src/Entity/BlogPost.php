@@ -16,90 +16,89 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=BlogPostRepository::class)
- *
- * @ApiResource(
- *     itemOperations={
- *         "get"={
- *             "normalization_context"={
- *                 "groups"={"get-blog-post-with-author"}
- *             }
- *         },
- *         "put"={
- *             "access_control"="is_granted('ROLE_EDITOR') or (is_granted('ROLE_WRITER') and object.getAuthor() == user)"
- *         }
- *     },
- *     collectionOperations={
- *         "get",
- *         "post"={
- *             "access_control"="is_granted('ROLE_WRITER')"
- *         }
- *     },
- *     denormalizationContext={
- *         "groups"={"post"}
- *     }
- * )
  */
+#[
+    ApiResource(
+        collectionOperations: [
+            'get',
+            'post' => [
+                'access_control' => "is_granted('ROLE_WRITER')"
+            ]
+        ],
+        itemOperations: [
+            'get' => [
+                'normalization_context' => [
+                    'groups' => ['get-blog-post-with-author']
+                ]
+            ],
+            'put' => [
+                'access_control' => "is_granted('ROLE_EDITOR') or (is_granted('ROLE_WRITER') and object.getAuthor() == user)"
+            ]
+        ],
+        denormalizationContext: [
+            'groups' => ['post']
+        ]
+    )
+]
 class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     *
-     * @Groups({"get-blog-post-with-author"})
      */
+    #[Groups(['get-blog-post-with-author'])]
     private ?int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank()
-     * @Assert\Length(min=10)
-     *
-     * @Groups({"post", "get-blog-post-with-author"})
      */
+    #[
+        Assert\NotBlank,
+        Assert\Length(min: 10),
+        Groups(['post', 'get-blog-post-with-author'])
+    ]
     private ?string $title;
 
     /**
      * @ORM\Column(type="datetime")
-     *
-     * @Groups({"get-blog-post-with-author"})
      */
+    #[Groups(['get-blog-post-with-author'])]
     private ?DateTimeInterface $published;
 
     /**
      * @ORM\Column(type="text")
-     *
-     * @Assert\NotBlank()
-     * @Assert\Length(min=20)
-     *
-     * @Groups({"post", "get-blog-post-with-author"})
      */
+    #[
+        Assert\NotBlank,
+        Assert\Length(min: 20),
+        Groups(['post', 'get-blog-post-with-author'])
+    ]
     private ?string $content;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     *
-     * @Assert\NotBlank()
-     *
-     * @Groups({"post", "get-blog-post-with-author"})
      */
+    #[
+        Assert\NotBlank,
+        Groups(['post', 'get-blog-post-with-author'])
+    ]
     private $slug;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="posts")
      * @ORM\JoinColumn(nullable=false)
-     *
-     * @Groups({"get-blog-post-with-author"})
      */
+    #[Groups(['get-blog-post-with-author'])]
     private UserInterface $author;
 
     /**
      * @ORM\OneToMany(targetEntity="Comment", mappedBy="post")
-     *
-     * @ApiSubresource()
-     * @Groups({"get-blog-post-with-author"})
      */
+    #[
+        ApiSubresource,
+        Groups(['get-blog-post-with-author'])
+    ]
     private $comments;
 
 
@@ -108,8 +107,8 @@ class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
      * @ORM\JoinTable()
      */
     #[
-        Groups(['post']),
-        ApiSubresource()
+        ApiSubresource(),
+        Groups(['post', 'get-blog-post-with-author'])
     ]
     private $images;
 
