@@ -54,6 +54,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
             'title' => 'partial',
             'content' => 'partial',
             'author' => 'exact',
+            'author.name' => 'partial'
         ]
     ),
     ApiFilter(
