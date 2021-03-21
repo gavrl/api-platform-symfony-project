@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use JetBrains\PhpStorm\Pure;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\BlogPostRepository;
@@ -101,9 +102,22 @@ class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
      */
     private $comments;
 
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Image::class)
+     * @ORM\JoinTable()
+     */
+    #[
+        Groups(['post']),
+        ApiSubresource()
+    ]
+    private $images;
+
+    #[Pure]
     public function __construct()
     {
         $this->comments = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -188,5 +202,23 @@ class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
     public function getComments(): Collection
     {
         return $this->comments;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image)
+    {
+        $this->images->add($image);
+    }
+
+    public function removeImage(Image $image)
+    {
+        $this->images->removeElement($image);
     }
 }
