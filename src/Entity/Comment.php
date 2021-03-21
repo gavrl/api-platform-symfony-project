@@ -36,7 +36,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             ]
         ],
         attributes: [
-            'order' => ['published' => 'DESC']
+            'order' => ['published' => 'DESC'],
+            'pagination_client_enabled' => true
         ],
         denormalizationContext: [
             'groups' => ['post']
