@@ -1,4 +1,8 @@
 api_platform:
+    formats:
+        json:
+            mime_types:
+                - application/json
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
     patch_formats:
@@ -20,3 +24,5 @@ api_platform:
             partial: false
             client_partial: true
             partial_parameter_name: 'partial'
+    exception_to_status:
+        App\Exception\EmptyBodyException: 400

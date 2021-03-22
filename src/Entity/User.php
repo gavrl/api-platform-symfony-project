@@ -30,6 +30,7 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
                 'normalization_context' => [
                     'groups' => ['get'],
                 ],
+                'validation_groups' => ['post']
             ]
         ],
         itemOperations: [
@@ -56,6 +57,7 @@ use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
                 'denormalization_context' => [
                     'groups' => ['put-reset-password']
                 ],
+                'validation_groups' => ['put-reset-password']
             ]
         ]
     )
