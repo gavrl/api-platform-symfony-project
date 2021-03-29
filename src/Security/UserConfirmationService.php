@@ -4,7 +4,7 @@ namespace App\Security;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Exception\InvalidConfirmationTokenException;
 
 class UserConfirmationService
 {
@@ -26,6 +26,10 @@ class UserConfirmationService
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @param string $confirmationToken
+     * @throws InvalidConfirmationTokenException
+     */
     public function confirmUser(string $confirmationToken)
     {
         $user = $this->userRepository->findOneBy(
@@ -34,7 +38,7 @@ class UserConfirmationService
 
         // User was NOT found by confirmation token
         if (!$user) {
-            throw new NotFoundHttpException();
+            throw new InvalidConfirmationTokenException();
         }
 
         $user->setEnabled(true);

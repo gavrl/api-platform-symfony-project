@@ -129,7 +129,7 @@ class User implements UserInterface
             groups: ['post']
         )
     ]
-    private string $password;
+    private $password;
 
     #[
         Groups(['post']),
@@ -140,7 +140,7 @@ class User implements UserInterface
             groups: ['post']
         )
     ]
-    private ?string $retypedPassword;
+    private $retypedPassword;
 
     #[
         Groups(['put-reset-password']),
