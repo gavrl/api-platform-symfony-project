@@ -37,3 +37,6 @@ services:
             - { name: 'serializer.normalizer', priority: 64 }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Security\UserConfirmationService:
+        arguments:
+            $logger: '@monolog.logger.token_confirmation'
