@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use JetBrains\PhpStorm\ArrayShape;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\{AuthoredEntityInterface, User};
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -24,6 +25,7 @@ class AuthoredEntitySubscriber implements EventSubscriberInterface
     /**
      * @return array
      */
+    #[ArrayShape([KernelEvents::VIEW => "array"])]
     public static function getSubscribedEvents(): array
     {
         return [
