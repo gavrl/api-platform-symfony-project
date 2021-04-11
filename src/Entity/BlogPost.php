@@ -153,7 +153,7 @@ class BlogPost implements AuthoredEntityInterface, PublishedDateEntityInterface
 
 
     /**
-     * @ORM\ManyToMany(targetEntity=Image::class)
+     * @ORM\ManyToMany(targetEntity="Image")
      * @ORM\JoinTable()
      */
     #[
