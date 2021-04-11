@@ -151,4 +151,9 @@ class Comment implements AuthoredEntityInterface, PublishedDateEntityInterface
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return substr($this->content, 0, 20) . '...';
+    }
 }
