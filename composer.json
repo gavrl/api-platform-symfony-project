@@ -42,6 +42,8 @@
         "fzaninotto/faker": "^1.9",
         "symfony/debug-bundle": "^5.2",
         "symfony/maker-bundle": "^1.28",
+        "symfony/phpunit-bridge": "^5.2",
+        "phpunit/phpunit": ">=9.5.4",
         "symfony/stopwatch": "^5.2",
         "symfony/var-dumper": "^5.2",
         "symfony/web-profiler-bundle": "^5.2"
